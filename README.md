@@ -8,3 +8,4 @@ the Library of Congress (LoC), Ordnance Survey (OS), Geonames, and DBPedia. Clie
 for running queries against either SPARQL endpoints or RESTful interfaces. The Clients and methods were very much 
 developed with the ADS uses in mind, but hopefully can be improved and extended by others as they need them.
 
+This has been updated to be more generic and work in Intellij IDEA.
