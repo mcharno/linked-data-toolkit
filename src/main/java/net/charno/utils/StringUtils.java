@@ -22,6 +22,7 @@ public class StringUtils {
     }
     
     public static String capitalise(String input) {
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
+        String trimmed = input.trim();
+        return trimmed.substring(0, 1).toUpperCase() + trimmed.substring(1);
     }
 }
