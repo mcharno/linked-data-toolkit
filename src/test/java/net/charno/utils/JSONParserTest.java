@@ -7,7 +7,6 @@ import net.charno.semweb.bindings.OSBinding;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
