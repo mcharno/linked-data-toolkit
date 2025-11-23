@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for both CommonJS and ESM modules
 - Source maps for debugging
 
+#### Archaeological & Heritage Data Support (NEW!)
+- **NomismaClient** for numismatic (coin) data queries following LOD principles
+- **HeritageDataClient** for UK FISH controlled vocabularies (monuments, objects, periods)
+- **GettyAATClient** for Getty Art & Architecture Thesaurus queries
+- **ADSClient** for Archaeology Data Service UK repository access
+- **NFDI4ObjectsClient** for German archaeological knowledge graph (CIDOC-CRM/LADO)
+- **PeriodOHelper** for scholarly period definitions and temporal alignment
+- Comprehensive archaeological documentation in ARCHAEOLOGICAL.md
+- CLI commands for all archaeological data sources
+- Implementation of FAIR data principles and Internet Archaeology best practices
+- Support for CIDOC-CRM, SKOS, and archaeological ontologies
+
 ### Changed
 - **BREAKING**: All methods are now asynchronous (return Promises)
 - **BREAKING**: Changed from static methods to instance-based clients

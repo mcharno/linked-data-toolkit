@@ -9,12 +9,17 @@ import { DBPediaClient } from '../clients/dbpedia-client.js';
 import { GeonamesClient } from '../clients/geonames-client.js';
 import { LoCSubjectClient } from '../clients/loc-client.js';
 import { OSClient } from '../clients/os-client.js';
+import { NomismaClient } from '../clients/nomisma-client.js';
+import { HeritageDataClient, HeritageVocabulary } from '../clients/heritage-data-client.js';
+import { GettyAATClient } from '../clients/getty-aat-client.js';
+import { ADSClient } from '../clients/ads-client.js';
+import { NFDI4ObjectsClient } from '../clients/nfdi4objects-client.js';
 
 const program = new Command();
 
 program
   .name('linked-data-toolkit')
-  .description('CLI for querying linked data sources and SPARQL endpoints')
+  .description('CLI for querying linked data sources and SPARQL endpoints including archaeological/heritage databases')
   .version('2.0.0');
 
 // DBPedia commands
@@ -206,6 +211,318 @@ os.command('location')
         if (binding.type) {
           console.log(`Type: ${binding.type}`);
         }
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// Nomisma commands (Numismatics)
+const nomisma = program.command('nomisma').description('Query Nomisma numismatic data');
+
+nomisma
+  .command('search')
+  .description('Search for numismatic concepts')
+  .argument('<keyword>', 'Search term')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new NomismaClient();
+      const results = await client.searchConcepts(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} result(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+nomisma
+  .command('mints')
+  .description('Find coin mints by location')
+  .argument('<location>', 'Mint location')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (location: string, options: { max: string }) => {
+    try {
+      const client = new NomismaClient();
+      const results = await client.findMints(location, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} mint(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// Heritage Data UK commands
+const heritage = program.command('heritage').description('Query Heritage Data UK vocabularies');
+
+heritage
+  .command('monuments')
+  .description('Search monument types')
+  .argument('<keyword>', 'Search term (e.g., "castle", "villa")')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new HeritageDataClient();
+      const results = await client.searchMonumentTypes(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} monument type(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+heritage
+  .command('objects')
+  .description('Search archaeological object types')
+  .argument('<keyword>', 'Search term (e.g., "pottery", "coin")')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new HeritageDataClient();
+      const results = await client.searchObjectTypes(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} object type(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+heritage
+  .command('periods')
+  .description('Search period definitions')
+  .argument('<keyword>', 'Search term (e.g., "Roman", "Medieval")')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new HeritageDataClient();
+      const results = await client.searchPeriods(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} period(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// Getty AAT commands
+const getty = program.command('getty').description('Query Getty Art & Architecture Thesaurus');
+
+getty
+  .command('search')
+  .description('Search AAT terms')
+  .argument('<keyword>', 'Search term')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new GettyAATClient();
+      const results = await client.searchTerms(keyword, undefined, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} term(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+getty
+  .command('materials')
+  .description('Search material types')
+  .argument('<material>', 'Material name (e.g., "bronze", "ceramic")')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (material: string, options: { max: string }) => {
+    try {
+      const client = new GettyAATClient();
+      const results = await client.searchMaterials(material, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} material(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// ADS commands
+const ads = program.command('ads').description('Query Archaeology Data Service');
+
+ads
+  .command('search')
+  .description('Search ADS archives')
+  .argument('<keyword>', 'Search term')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new ADSClient();
+      const results = await client.searchArchives(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} archive(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Title: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+ads
+  .command('period')
+  .description('Search archives by period')
+  .argument('<period>', 'Period name (e.g., "Roman", "Medieval")')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (period: string, options: { max: string }) => {
+    try {
+      const client = new ADSClient();
+      const results = await client.searchByPeriod(period, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} archive(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Title: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+// NFDI4Objects commands
+const nfdi = program.command('nfdi').description('Query NFDI4Objects knowledge graph');
+
+nfdi
+  .command('collections')
+  .description('Search collections')
+  .argument('<keyword>', 'Search term')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new NFDI4ObjectsClient();
+      const results = await client.searchCollections(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} collection(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Title: ${result.label}`);
+        console.log('---');
+      }
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  });
+
+nfdi
+  .command('objects')
+  .description('Search cultural heritage objects')
+  .argument('<keyword>', 'Search term')
+  .option('-m, --max <number>', 'Maximum number of results', '20')
+  .action(async (keyword: string, options: { max: string }) => {
+    try {
+      const client = new NFDI4ObjectsClient();
+      const results = await client.searchObjects(keyword, parseInt(options.max));
+
+      if (results.length === 0) {
+        console.log('No results found.');
+        return;
+      }
+
+      console.log(`Found ${results.length} object(s):\n`);
+      for (const result of results) {
+        console.log(`URI: ${result.uri}`);
+        console.log(`Label: ${result.label}`);
         console.log('---');
       }
     } catch (error) {

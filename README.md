@@ -10,19 +10,31 @@ This is a complete modernization of the original Java-based toolkit, now written
 
 - **Modern TypeScript**: Fully typed with strict TypeScript configuration
 - **Dual Usage**: Use as a library in your web applications or as a CLI tool
-- **Multiple Data Sources**: Query DBPedia, Geonames, Library of Congress, and Ordnance Survey
+- **Multiple Data Sources**: Query DBPedia, Geonames, Library of Congress, Ordnance Survey, and specialized archaeological/heritage databases
 - **Async/Await**: Modern promise-based API
 - **Error Handling**: Comprehensive error handling with custom error types
 - **Retry Logic**: Automatic retry with exponential backoff for network errors
+- **Archaeological Focus**: Comprehensive support for heritage linked open data following FAIR principles
 - **Well Tested**: Comprehensive test suite with Jest
 - **Clean Code**: ESLint and Prettier configured for code quality
 
 ## Supported Data Sources
 
+### General Linked Data
 - **DBPedia**: Query the DBPedia knowledge base for organizations and entities
 - **Geonames**: Geographic name lookups with precise and fuzzy matching
 - **Library of Congress**: Subject heading lookups
 - **Ordnance Survey**: UK geographic data queries
+
+### Archaeological & Heritage Data (NEW!)
+- **Nomisma**: Numismatic (coin) data with extensive ontology
+- **Heritage Data UK**: FISH controlled vocabularies for UK heritage
+- **Getty AAT**: Art & Architecture Thesaurus for material culture
+- **ADS**: Archaeology Data Service UK digital repository
+- **NFDI4Objects**: German archaeological knowledge graph (CIDOC-CRM/LADO)
+- **PeriodO**: Scholarly period definitions for temporal alignment
+
+See [ARCHAEOLOGICAL.md](./ARCHAEOLOGICAL.md) for detailed documentation on archaeological data sources.
 
 ## Installation
 
@@ -40,32 +52,71 @@ npm install -g @charno/linked-data-toolkit
 
 ### As a Library
 
+**General Linked Data:**
 ```typescript
 import { DBPediaClient, GeonamesClient, LoCSubjectClient, OSClient } from '@charno/linked-data-toolkit';
 
 // DBPedia example
 const dbpedia = new DBPediaClient();
 const organizations = await dbpedia.lookupOrganization('Microsoft', 10);
-console.log(organizations);
 
 // Geonames example (requires username)
 const geonames = new GeonamesClient({ username: 'your_username' });
 const locations = await geonames.lookupPreciseLocationInCountry('London', 'GB', 10);
-console.log(locations);
 
 // Library of Congress example
 const loc = new LoCSubjectClient();
 const subjects = await loc.lookupSubjectFuzzy('archaeology');
-console.log(subjects);
 
 // Ordnance Survey example
 const os = new OSClient();
 const ukLocations = await os.lookupFuzzyLocation('Manchester', 10);
-console.log(ukLocations);
+```
+
+**Archaeological & Heritage Data:**
+```typescript
+import {
+  NomismaClient,
+  HeritageDataClient,
+  GettyAATClient,
+  ADSClient,
+  NFDI4ObjectsClient,
+  PeriodOHelper
+} from '@charno/linked-data-toolkit';
+
+// Nomisma - Query numismatic data
+const nomisma = new NomismaClient();
+const denarii = await nomisma.findDenominations('denarius');
+const romeMints = await nomisma.findMints('Rome');
+
+// Heritage Data UK - Archaeological vocabularies
+const heritage = new HeritageDataClient();
+const castles = await heritage.searchMonumentTypes('castle');
+const pottery = await heritage.searchObjectTypes('pottery');
+
+// Getty AAT - Art & Architecture Thesaurus
+const getty = new GettyAATClient();
+const bronze = await getty.searchMaterials('bronze');
+const vessels = await getty.searchObjectTypes('vessel');
+
+// ADS - Archaeology Data Service
+const ads = new ADSClient();
+const villas = await ads.searchArchives('Roman villa');
+const romanArchives = await ads.searchByPeriod('Roman');
+
+// NFDI4Objects - German archaeological knowledge graph
+const nfdi = new NFDI4ObjectsClient();
+const collections = await nfdi.searchCollections('pottery');
+
+// PeriodO - Period definitions
+const periodo = new PeriodOHelper();
+const dataset = await periodo.getDataset(); // Cache this!
+const periods = periodo.searchPeriods(dataset, 'Roman', 20);
 ```
 
 ### As a CLI
 
+**General Linked Data:**
 ```bash
 # Query DBPedia
 linked-data-toolkit dbpedia organization "Microsoft" --max 5
@@ -81,6 +132,30 @@ linked-data-toolkit loc subject "history" --starts-with
 
 # Query Ordnance Survey
 linked-data-toolkit os location "Manchester" --fuzzy --max 10
+```
+
+**Archaeological & Heritage Data:**
+```bash
+# Nomisma - Numismatics
+linked-data-toolkit nomisma search "denarius"
+linked-data-toolkit nomisma mints "Rome"
+
+# Heritage Data UK
+linked-data-toolkit heritage monuments "castle"
+linked-data-toolkit heritage objects "pottery"
+linked-data-toolkit heritage periods "Roman"
+
+# Getty AAT
+linked-data-toolkit getty search "amphora"
+linked-data-toolkit getty materials "bronze"
+
+# ADS - Archaeology Data Service
+linked-data-toolkit ads search "Roman villa"
+linked-data-toolkit ads period "Roman"
+
+# NFDI4Objects
+linked-data-toolkit nfdi collections "pottery"
+linked-data-toolkit nfdi objects "Roman coin"
 ```
 
 ## API Reference
