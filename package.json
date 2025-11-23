@@ -17,7 +17,8 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm run type-check && npm test && npm run build"
   },
   "keywords": [
     "linked-data",
@@ -28,7 +29,18 @@
     "library-of-congress",
     "ordnance-survey",
     "rdf",
-    "typescript"
+    "typescript",
+    "archaeology",
+    "heritage",
+    "nomisma",
+    "cidoc-crm",
+    "getty-aat",
+    "cultural-heritage",
+    "numismatics",
+    "archaeological-data",
+    "fair-data",
+    "linked-open-data",
+    "ontology"
   ],
   "author": "Michael Charno <michael@charno.net>",
   "license": "MIT",
@@ -36,6 +48,10 @@
     "type": "git",
     "url": "https://github.com/mcharno/linked-data-toolkit.git"
   },
+  "bugs": {
+    "url": "https://github.com/mcharno/linked-data-toolkit/issues"
+  },
+  "homepage": "https://github.com/mcharno/linked-data-toolkit#readme",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -62,6 +78,8 @@
     "dist",
     "README.md",
     "LICENSE",
-    "MIGRATION.md"
+    "MIGRATION.md",
+    "ARCHAEOLOGICAL.md",
+    "CHANGELOG.md"
   ]
 }

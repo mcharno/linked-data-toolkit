@@ -1,0 +1,48 @@
+# Source files (only publish dist/)
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+tsup.config.ts
+
+# Tests
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+coverage/
+
+# Development
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# CI/CD
+.github/
+circle.yml
+
+# Config
+.eslintrc.json
+.prettierrc.json
+.editorconfig
+
+# Build artifacts
+*.tsbuildinfo
+.cache/
+
+# Java legacy
+pom.xml
+linked-data-toolkit.iml
+src/main/
+src/test/
+
+# Logs and temp
+*.log
+tmp/
+temp/
+
+# Git
+.git/
+.gitignore
