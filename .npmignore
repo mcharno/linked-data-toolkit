@@ -32,11 +32,11 @@ circle.yml
 *.tsbuildinfo
 .cache/
 
-# Java legacy
-pom.xml
-linked-data-toolkit.iml
-src/main/
-src/test/
+# Legacy Java implementation
+legacy/
+
+# Scripts
+scripts/
 
 # Logs and temp
 *.log
